@@ -15,8 +15,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    //this two are use in a simple test
     private ListView listView;
-
     public ListActivity la;
 
     private final int ADD=0;
@@ -38,24 +38,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+//some setting about the listview
 //        listView = new ListView(this);
 //        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,getData()));
 //        setContentView(listView);
 
 
     }
-
+//this method can show a list in MainActivity
 //    private List<String> getData(){
 //
 //        List<String> data = new ArrayList<String>();
-//        data.add("测试数据1");
-//        data.add("测试数据2");
-//        data.add("测试数据3");
-//        data.add("测试数据4");
+//        data.add("test1");
+//        data.add("test2");
+//        data.add("test3");
+//        data.add("test4");
 //
 //        return data;
 //    }
-
-
 }
