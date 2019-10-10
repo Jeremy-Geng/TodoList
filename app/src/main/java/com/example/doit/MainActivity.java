@@ -3,26 +3,80 @@ package com.example.doit;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MyActivity";
+
+    public class EventAdapator extends BaseAdapter{
+
+        public ArrayList<Event> events;
+        private Context econtext;
+
+        public EventAdapator(ArrayList<Event> events,Context econtext){
+            super();
+            this.events = events;
+            this.econtext = eContext;
+        }
+
+        @Override
+        public int getCount() {
+            return events.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View convertView, ViewGroup parent) {
+            convertView = LayoutInflater.from(econtext).inflate(R.layout.listview_item,null);
+            TextView e_Name = (TextView) convertView.findViewById(R.id.even_name);
+            TextView e_Description = (TextView) convertView.findViewById(R.id.event_discription);
+            e_Name.setText(events.get(i).getEventName());
+            e_Description.setText(events.get(i).getDescription());
+            return convertView;
+        }
+    }
+
     //this two are use in a simple test
-    private ListView listView;
-    public ListActivity la;
+    private ListView list_events;
+    public ArrayList<Event> events;
+    private EventAdapator eAdapter;
+    private Context eContext;
+    String path=Environment.getExternalStorageDirectory().getAbsolutePath()+"/people.txt";
 
-    private final int ADD=0;
-    private final int UPDATE=1;
-
-    public ArrayList<String> eventList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +84,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button add=(Button) findViewById(R.id.add);
+        list_events = (ListView)findViewById(R.id.list_item);
+        eContext = MainActivity.this;
+
+        events  = new ArrayList<>();
+        restore();
+
+        Bundle bunlde = getIntent().getExtras();
+        if(bunlde != null) {
+            String index = bunlde.getString("index");
+
+            if (index != null) {
+
+            } else {
+                String eName = bunlde.getString("name");
+                String eDescription = bunlde.getString("description");
+                Event newEvent = new Event(eName, eDescription);
+                events.add(newEvent);
+                save();
+            }
+        }
+
+        eAdapter = new EventAdapator(events,eContext);
+        list_events.setAdapter(eAdapter);
+
+
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,22 +117,44 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-//some setting about the listview
-//        listView = new ListView(this);
-//        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,getData()));
-//        setContentView(listView);
-
 
     }
-//this method can show a list in MainActivity
-//    private List<String> getData(){
-//
-//        List<String> data = new ArrayList<String>();
-//        data.add("test1");
-//        data.add("test2");
-//        data.add("test3");
-//        data.add("test4");
-//
-//        return data;
-//    }
+
+    public void save(){
+        try{
+            File filesDir = new File(getDir("myFile", MODE_PRIVATE).getAbsolutePath()) ;
+            Log.i(TAG,"file_dir="+filesDir);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(filesDir.toString() +"/event.ser"));
+            objectOutputStream.writeObject(events);
+            objectOutputStream.close();
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void restore(){
+        try{
+            File filesDir = new File(getDir("myFile", MODE_PRIVATE).getAbsolutePath()) ;
+            if(filesDir.exists()) {
+                ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(filesDir.toString() +"/event.ser"));
+
+                events = (ArrayList<Event>) objectInputStream.readObject();
+                Log.i("name",events.get(0).getEventName() );
+
+                objectInputStream.close();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+
+
 }

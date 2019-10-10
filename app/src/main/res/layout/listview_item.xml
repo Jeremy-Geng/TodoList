@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/even_name"
+        android:layout_width="match_parent"
+        android:textStyle="bold"
+        android:textSize="65px"
+        android:layout_height="40dp"
+        />
+
+    <TextView
+        android:id="@+id/event_discription"
+        android:layout_width="match_parent"
+        android:textSize="45px"
+        android:layout_height="25dp"
+        />
+</LinearLayout>

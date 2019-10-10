@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.speech.RecognitionService;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 
 public class EventActivity extends AppCompatActivity {
 
-    private ArrayList<Event> events; //a list that will demonstrate in MainActivity
 
     EditText name;
     EditText desc;
@@ -30,21 +30,30 @@ public class EventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
+
         //getting components
         Button add=(Button)findViewById(R.id.add);
         name=(EditText)findViewById(R.id.name);
         desc=(EditText)findViewById(R.id.description);
+
+
         //the add bottom's onclick method
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String n= name.getText().toString();
-                String d=desc.getText().toString();
-                setVisible(false); //a test action
+                String n = name.getText().toString();
+                String d = desc.getText().toString();
+                Bundle bundle = new Bundle();
+                bundle.putString("name",n);
+                bundle.putString("description",d);
+                Intent intent = new Intent(EventActivity.this,MainActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 
     }
+
     //customize the menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -56,9 +65,11 @@ public class EventActivity extends AppCompatActivity {
         del.getActionView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               setVisible(false);//a test action
+                setVisible(false);//a test action
             }
         });
         return super.onCreateOptionsMenu(menu);
     }
+
+
 }
