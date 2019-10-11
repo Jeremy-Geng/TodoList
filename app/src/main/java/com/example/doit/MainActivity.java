@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Object getItem(int i) {
-            return null;
+            return events.get(i);
         }
 
         @Override
@@ -75,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<Event> events;
     private EventAdapator eAdapter;
     private Context eContext;
-    String path=Environment.getExternalStorageDirectory().getAbsolutePath()+"/people.txt";
 
 
     @Override
@@ -92,22 +92,51 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle bunlde = getIntent().getExtras();
         if(bunlde != null) {
+
+            String eName = bunlde.getString("name");
+            String eDescription = bunlde.getString("description");
             String index = bunlde.getString("index");
+            String flag = bunlde.getString("flag");
+
 
             if (index != null) {
-
+                int i = Integer.parseInt(index);
+                if(flag == null){
+                    events.get(i).setEventName(eName);
+                    events.get(i).setDescription(eDescription);
+                    save();
+                }else{
+                    events.remove(i);
+                    save();
+                }
             } else {
-                String eName = bunlde.getString("name");
-                String eDescription = bunlde.getString("description");
-                Event newEvent = new Event(eName, eDescription);
-                events.add(newEvent);
-                save();
+                if(flag == null){
+                    Event newEvent = new Event(eName, eDescription);
+                    events.add(newEvent);
+                    save();
+                }
             }
-        }
 
+        }
         eAdapter = new EventAdapator(events,eContext);
         list_events.setAdapter(eAdapter);
 
+        list_events.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Event event =  (Event)adapterView.getItemAtPosition(i);
+                String n = event.getEventName();
+                String d = event.getDescription();
+                String index = Integer.toString(i);
+                Bundle bundle = new Bundle();
+                bundle.putString("name",n);
+                bundle.putString("description",d);
+                bundle.putString("index",index);
+                Intent intent = new Intent(MainActivity.this,EventActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
 
 
         add.setOnClickListener(new View.OnClickListener() {

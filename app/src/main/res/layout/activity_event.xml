@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
-        android:text="ADD"
         android:textSize="20dp"
        android:background="#01A4DB"
         android:textColor="#FFFFFF"

@@ -31,4 +31,11 @@ public class Event implements Serializable {
     public String getDescription() {
         return description;
     }
+
+    public void setEventName(String name){
+        eventName = name;
+    }
+    public void setDescription(String description){
+        this.description = description ;
+    }
 }
