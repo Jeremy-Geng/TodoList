@@ -28,6 +28,7 @@ public class EventActivity extends AppCompatActivity {
     EditText name;
     EditText desc;
     EditText date;
+    EditText location;
     String flag = "-1";
     String INDEX;
 
@@ -48,6 +49,8 @@ public class EventActivity extends AppCompatActivity {
         date = (EditText) findViewById(R.id.date);
         date.setInputType(InputType.TYPE_NULL);
         calendar = Calendar.getInstance();
+
+        location=(EditText)findViewById(R.id.location);
 
         String eName;
         String eDescription;
@@ -96,6 +99,21 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dateSelection();
+            }
+        });
+
+        location.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                Intent intent=new Intent(EventActivity.this,MapsActivity.class);
+                startActivity(intent);
+            }
+        });
+        location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(EventActivity.this,MapsActivity.class);
+                startActivity(intent);
             }
         });
 
