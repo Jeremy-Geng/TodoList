@@ -125,13 +125,13 @@ public class MainActivity extends AppCompatActivity {
                     save();
                 }
             }
-            for (Event e: events) {
+           /* for (Event e: events) {
                 if (e.getDate() != null) {
                     if (calculateTime(e.getDate()) <= 0) {
 
                     }
                 }
-            }
+            }*/
 
         }
         eAdapter = new EventAdapator(events,eContext);
