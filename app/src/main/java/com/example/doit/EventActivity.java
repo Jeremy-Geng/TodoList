@@ -1,8 +1,10 @@
 package com.example.doit;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
@@ -32,6 +34,8 @@ public class EventActivity extends AppCompatActivity {
     String flag = "-1";
     String INDEX;
 
+    public static int LOCATION_CONTACT=1;
+
     private Calendar calendar;
     private int eYear;
     private int eMonth;
@@ -54,15 +58,21 @@ public class EventActivity extends AppCompatActivity {
 
         String eName;
         String eDescription;
+        String eDate;
+        String eLocation;
         final Bundle bundle = getIntent().getExtras();
 
         if(bundle != null){
             add.setText("Edit");
             eName = bundle.getString("name");
             eDescription = bundle.getString("description");
+            eDate=bundle.getString("date");
+            eLocation=bundle.getString("location");
             INDEX = bundle.getString("index");
             name.setText(eName);
             desc.setText(eDescription);
+            date.setText(eDate);
+            location.setText(eLocation);
         }else{
             add.setText("ADD");
         }
@@ -72,7 +82,9 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String n = name.getText().toString();
+                String da=date.getText().toString();
                 String d = desc.getText().toString();
+                String l=location.getText().toString();
                 Bundle newBundle = new Bundle();
                 if(bundle != null){
                     String index = bundle.getString("index");
@@ -80,6 +92,8 @@ public class EventActivity extends AppCompatActivity {
                 }
                 newBundle.putString("name",n);
                 newBundle.putString("description",d);
+                newBundle.putString("date",da);
+                newBundle.putString("location",l);
                 Intent intent = new Intent(EventActivity.this,MainActivity.class);
                 intent.putExtras(newBundle);
                 startActivity(intent);
@@ -106,16 +120,16 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean b) {
                 Intent intent=new Intent(EventActivity.this,MapsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,LOCATION_CONTACT);
             }
         });
-        location.setOnClickListener(new View.OnClickListener() {
+       /* location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(EventActivity.this,MapsActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
     }
     //choose a date from calendar
@@ -129,7 +143,7 @@ public class EventActivity extends AppCompatActivity {
                         eYear = year;
                         eMonth = month;
                         eDay = day;
-                        // 更新EditText控件日期 小于10加0
+                        // calculate the date
                         date.setText(new StringBuilder()
                                 .append(eYear)
                                 .append("-")
@@ -167,5 +181,13 @@ public class EventActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOCATION_CONTACT && resultCode == Activity.RESULT_OK ){
+            //location = data.getExtras().getParcelable("location");
+            location.setText(data.getStringExtra("location"));
+            //onResume();
+        }
+    }
 }

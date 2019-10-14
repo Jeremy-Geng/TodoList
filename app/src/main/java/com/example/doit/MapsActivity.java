@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -69,8 +70,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //Widget
     private EditText mSearchText;
     private ImageView mGps;
+    private Button mSelect;
 
-
+    //the data that want to give back
+    private String location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,12 +81,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         mSearchText=(EditText)findViewById(R.id.input_search);
         mGps=(ImageView)findViewById(R.id.ic_gps);
-
-        // Initialize Places.
-        Places.initialize(getApplicationContext(), "AIzaSyC3Zxj6scsztFg9RWQxjQpCYdCJYsonylw");
-
-// Create a new Places client instance.
-        PlacesClient placesClient = Places.createClient(this);
+        mSelect=(Button)findViewById(R.id.btn_select);
+        mSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                location=(String)mSearchText.getText().toString();
+                Intent intent=new Intent();
+                intent.putExtra("location",location);
+                setResult(RESULT_OK,intent);
+                finish();
+            }
+        });
+        
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

@@ -95,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
             String eName = bunlde.getString("name");
             String eDescription = bunlde.getString("description");
+            String eDate=bunlde.getString("date");
+            String eLocation=bunlde.getString("location");
             String index = bunlde.getString("index");
             String flag = bunlde.getString("flag");
 
@@ -104,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                 if(flag == null){
                     events.get(i).setEventName(eName);
                     events.get(i).setDescription(eDescription);
+                    events.get(i).setDate(eDate);
+                    events.get(i).setLocation(eLocation);
                     save();
                 }else{
                     events.remove(i);
@@ -111,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 if(flag == null){
-                    Event newEvent = new Event(eName, eDescription);
+                    Event newEvent = new Event(eName, eDescription,eDate,eLocation);
                     events.add(newEvent);
                     save();
                 }
@@ -127,11 +131,15 @@ public class MainActivity extends AppCompatActivity {
                 Event event =  (Event)adapterView.getItemAtPosition(i);
                 String n = event.getEventName();
                 String d = event.getDescription();
+                String da=event.getDate();
+                String loc=event.getLocation();
                 String index = Integer.toString(i);
                 Bundle bundle = new Bundle();
                 bundle.putString("name",n);
                 bundle.putString("description",d);
                 bundle.putString("index",index);
+                bundle.putString("date",da);
+                bundle.putString("location",loc);
                 Intent intent = new Intent(MainActivity.this,EventActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
