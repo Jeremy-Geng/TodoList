@@ -1,5 +1,4 @@
 package com.example.doit;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -125,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
                     save();
                 }
             }
+            /**Check each event if they are due.
+             * -Lue Cai, 14/10/2019
+             * */
            /* for (Event e: events) {
                 if (e.getDate() != null) {
                     if (calculateTime(e.getDate()) <= 0) {
@@ -158,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     public void save(){
@@ -184,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     public void restore(){
         try{
             File filesDir = new File(getDir("myFile", MODE_PRIVATE).getAbsolutePath()) ;
@@ -201,7 +200,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
+    /**A simple method made for checking if an event arrive is due
+     * String date: event's date
+     * -Lue Cai, 14/10/2019
+     * **/
     private static double calculateTime(String date){
         double different=0;
         SimpleDateFormat formatter   =   new SimpleDateFormat("yyyy-MM-dd");

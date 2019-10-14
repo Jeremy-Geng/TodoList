@@ -25,8 +25,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class EventActivity extends AppCompatActivity {
-
-
     EditText name;
     EditText desc;
     EditText date;
@@ -149,7 +147,9 @@ public class EventActivity extends AppCompatActivity {
                 .get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    //customize the menu
+    /**A simple method that customizes the menu
+     * -Lue Cai, 14/10/2019
+     * **/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         final MenuInflater inflater = getMenuInflater();
@@ -166,20 +166,19 @@ public class EventActivity extends AppCompatActivity {
                 bundle.putString("index",INDEX);
                 intent.putExtras(bundle);
                 startActivity(intent);
-
-
             }
         });
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**A method that receive location data from the MapsActivity.java
+     *-Lue Cai, 14/10/2019
+     * **/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOCATION_CONTACT && resultCode == Activity.RESULT_OK ){
-            //location = data.getExtras().getParcelable("location");
             location.setText(data.getStringExtra("location"));
-            //onResume();
         }
     }
 }

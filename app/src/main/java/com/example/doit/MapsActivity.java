@@ -55,33 +55,41 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/** A map class which enable users get into the GoogleMap service to get locations.
+ * Using MapFragment to demonstrate a simple map model.
+ * *Using googleMapApi to get user's location and move camera to destination.
+ *
+ * -Lue Cai, 14/10/2019
+ * **/
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, LocationListener {
 
     private GoogleMap mMap;
     private Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
+    //the static variable that get the requirements
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final int REQUEST_CHECK_SETTINGS = 2;
     private LocationRequest mLocationRequest;
     private boolean mLocationUpdateState;
-
-    private static final String TAG="MapsActivity";
 
     //Widget
     private EditText mSearchText;
     private ImageView mGps;
     private Button mSelect;
 
-    //the data that want to give back
+    //the location data that want to give back
     private String location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        //get elements
         mSearchText=(EditText)findViewById(R.id.input_search);
         mGps=(ImageView)findViewById(R.id.ic_gps);
         mSelect=(Button)findViewById(R.id.btn_select);
+        //if choosing a location, sent the location back to EventActivity
         mSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,10 +114,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .addApi(LocationServices.API)
                     .build();
         }
-
+        //require for authority
         createLocationRequest();
     }
 
+    //initialize the current location and find the destination
     private void init(){
         mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -131,7 +140,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
+    //get desination's location
     private void getLocate(){
         String searchString =mSearchText.getText().toString();
         Geocoder geocoder=new Geocoder(MapsActivity.this);
@@ -180,7 +189,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mGoogleApiClient.disconnect();
         }
     }
-
+    //if user have't have authority, require or set the currenlocation
     private void setUpMap() {
         //get permission
         if (ActivityCompat.checkSelfPermission(this,
@@ -203,7 +212,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-
+    //put a red marker on the map
     protected void placeMarkerOnMap(LatLng location) {
         MarkerOptions markerOptions = new MarkerOptions().position(location);
         //adding location's information
@@ -231,6 +240,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return addressText;
     }
+    //require permission
     protected void startLocationUpdates() {
         //require permission
         if (ActivityCompat.checkSelfPermission(this,
@@ -245,6 +255,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 this);
     }
 
+    //a basic setting about location, allow phone detecting moving
     protected void createLocationRequest() {
         //build a request
         mLocationRequest = new LocationRequest();
@@ -284,7 +295,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-    //override the onActivityResult method in fragmentActivity
+    //override the onActivityResult method in fragmentActivity and get location information
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -314,7 +325,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         setUpMap();
-        //if mLocationUpdateState true, start update user current location
         if (mLocationUpdateState) {
             startLocationUpdates();
         }
@@ -329,7 +339,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
+    //make sure the marker is in the scene.
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
