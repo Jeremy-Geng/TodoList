@@ -15,6 +15,12 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -40,7 +46,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.location.LocationListener;
 
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
+//import com.google.android.libraries.places.compat.Place;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, LocationListener {
@@ -53,12 +64,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationRequest mLocationRequest;
     private boolean mLocationUpdateState;
 
+    private static final String TAG="MapsActivity";
+
+    //Widget
+    private EditText mSearchText;
+    private ImageView mGps;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        mSearchText=(EditText)findViewById(R.id.input_search);
+        mGps=(ImageView)findViewById(R.id.ic_gps);
+
+        // Initialize Places.
+        Places.initialize(getApplicationContext(), "AIzaSyC3Zxj6scsztFg9RWQxjQpCYdCJYsonylw");
+
+// Create a new Places client instance.
+        PlacesClient placesClient = Places.createClient(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -74,6 +99,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         createLocationRequest();
+    }
+
+    private void init(){
+        Log.d(TAG, "init: initialiazing");
+
+        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i== EditorInfo.IME_ACTION_SEARCH
+                        || i==EditorInfo.IME_ACTION_DONE
+                        || keyEvent.getAction()==KeyEvent.ACTION_DOWN
+                        || keyEvent.getAction()==KeyEvent.KEYCODE_ENTER){
+                    getLocate();
+                }
+                return false;
+            }
+        });
+
+        mGps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"onClick: clicked gps icon");
+                setUpMap();
+            }
+        });
+    }
+
+    private void getLocate(){
+        Log.d(TAG,"geoLocate: geolocating");
+
+        String searchString =mSearchText.getText().toString();
+        Geocoder geocoder=new Geocoder(MapsActivity.this);
+        List<Address> list =new ArrayList<>();
+        try {
+            list=geocoder.getFromLocationName(searchString,1);
+        }catch (IOException e){
+            Log.e(TAG, "geloLocate: IOException: "+ e.getMessage());
+        }
+        if (list.size()>0){
+            Address address=list.get(0);
+            Log.d(TAG, "geoLocate: found a location: "+ address.toString());
+            //Toast.makeText(this,address.toString(),Toast.LENGTH_SHORT).show();
+            LatLng newPlace = new LatLng(address.getLatitude(), address.getLongitude());  // this is New York
+            mMap.addMarker(new MarkerOptions().position(newPlace).title(address.getAddressLine(0)));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newPlace,12));
+        }
     }
 
 
@@ -101,6 +172,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.setOnMarkerClickListener(this);
+        init();
     }
 
     @Override
