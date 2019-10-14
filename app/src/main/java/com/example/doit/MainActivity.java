@@ -1,13 +1,18 @@
 package com.example.doit;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
 import android.app.ListActivity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,7 +32,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -77,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
     private EventAdapator eAdapter;
     private Context eContext;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
             String index = bunlde.getString("index");
             String flag = bunlde.getString("flag");
 
-
             if (index != null) {
                 int i = Integer.parseInt(index);
                 if(flag == null){
@@ -118,6 +123,13 @@ public class MainActivity extends AppCompatActivity {
                     Event newEvent = new Event(eName, eDescription,eDate,eLocation);
                     events.add(newEvent);
                     save();
+                }
+            }
+            for (Event e: events) {
+                if (e.getDate() != null) {
+                    if (calculateTime(e.getDate()) <= 0) {
+
+                    }
                 }
             }
 
@@ -190,8 +202,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
+    private static double calculateTime(String date){
+        double different=0;
+        SimpleDateFormat formatter   =   new SimpleDateFormat("yyyy-MM-dd");
+        Date curDate =  new Date(System.currentTimeMillis());
+        String   cD   =   formatter.format(curDate);
+        String[] t0=cD.split("-");
+        String[] t=date.split("-");
+        for (int i=0;i<3;i++){
+            if ((Integer.valueOf(t[i])-Integer.valueOf(t0[i]))>0){
+                different+=(Integer.valueOf(t[i])-Integer.valueOf(t0[i]));
+            }
+        }
+        return different;
+    }
 
 
 }

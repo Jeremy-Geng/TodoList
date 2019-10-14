@@ -123,14 +123,6 @@ public class EventActivity extends AppCompatActivity {
                 startActivityForResult(intent,LOCATION_CONTACT);
             }
         });
-       /* location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(EventActivity.this,MapsActivity.class);
-                startActivity(intent);
-            }
-        });*/
-
     }
     //choose a date from calendar
     private void dateSelection(){
