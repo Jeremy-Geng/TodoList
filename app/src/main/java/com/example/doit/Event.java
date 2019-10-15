@@ -11,18 +11,20 @@ import java.util.Date;
 
 public class Event implements Serializable {
     private String eventName;
-    private String description;
     private String date;
+    private String time;
+    private String description;
     private String ifComplete;
     private String location;
-    public Event(String eName, String desc,String date,String location){
+    public Event(String eName,String date,String time ,String desc,String location){
         this.eventName=eName;
-        this.description=desc;
         this.date=date;
+        this.time=time;
+        this.description=desc;
         this.location=location;
     }
-    public Event editEvent(String eName, String desc,String date,String location){
-        return new Event(eName,desc,date,location);
+    public Event editEvent(String eName, String date,String time,String desc,String location){
+        return new Event(eName,date,time,desc,location);
     }
 
     public String getEventName() {
@@ -37,6 +39,8 @@ public class Event implements Serializable {
 
     public String getLocation(){return location;}
 
+    public String getTime(){return time;}
+
     public void setEventName(String name){
         eventName = name;
     }
@@ -45,4 +49,5 @@ public class Event implements Serializable {
     }
     public void setDate(String date){this.date=date;}
     public void setLocation(String location){this.location=location;}
+    public void setTime(String time){this.time=time;}
 }

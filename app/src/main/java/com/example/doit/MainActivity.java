@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
             convertView = LayoutInflater.from(econtext).inflate(R.layout.listview_item,null);
             TextView e_Name = (TextView) convertView.findViewById(R.id.even_name);
             TextView e_Description = (TextView) convertView.findViewById(R.id.event_discription);
+            //CheckBox e_complete=(CheckBox) convertView.findViewById(R.id.complete);
             e_Name.setText(events.get(i).getEventName());
             e_Description.setText(events.get(i).getDescription());
             return convertView;
@@ -99,8 +101,9 @@ public class MainActivity extends AppCompatActivity {
         if(bunlde != null) {
 
             String eName = bunlde.getString("name");
-            String eDescription = bunlde.getString("description");
             String eDate=bunlde.getString("date");
+            String eTime=bunlde.getString("time");
+            String eDescription = bunlde.getString("description");
             String eLocation=bunlde.getString("location");
             String index = bunlde.getString("index");
             String flag = bunlde.getString("flag");
@@ -109,8 +112,9 @@ public class MainActivity extends AppCompatActivity {
                 int i = Integer.parseInt(index);
                 if(flag == null){
                     events.get(i).setEventName(eName);
-                    events.get(i).setDescription(eDescription);
                     events.get(i).setDate(eDate);
+                    events.get(i).setTime(eTime);
+                    events.get(i).setDescription(eDescription);
                     events.get(i).setLocation(eLocation);
                     save();
                 }else{
@@ -119,22 +123,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 if(flag == null){
-                    Event newEvent = new Event(eName, eDescription,eDate,eLocation);
+                    Event newEvent = new Event(eName,eDate,eTime, eDescription,eLocation);
                     events.add(newEvent);
                     save();
                 }
             }
-            /**Check each event if they are due.
-             * -Lue Cai, 14/10/2019
-             * */
-           /* for (Event e: events) {
-                if (e.getDate() != null) {
-                    if (calculateTime(e.getDate()) <= 0) {
-
-                    }
-                }
-            }*/
-
         }
         eAdapter = new EventAdapator(events,eContext);
         list_events.setAdapter(eAdapter);
@@ -146,13 +139,15 @@ public class MainActivity extends AppCompatActivity {
                 String n = event.getEventName();
                 String d = event.getDescription();
                 String da=event.getDate();
+                String t=event.getTime();
                 String loc=event.getLocation();
                 String index = Integer.toString(i);
                 Bundle bundle = new Bundle();
-                bundle.putString("name",n);
-                bundle.putString("description",d);
                 bundle.putString("index",index);
+                bundle.putString("name",n);
+                bundle.putString("time",t);
                 bundle.putString("date",da);
+                bundle.putString("description",d);
                 bundle.putString("location",loc);
                 Intent intent = new Intent(MainActivity.this,EventActivity.class);
                 intent.putExtras(bundle);
@@ -204,14 +199,33 @@ public class MainActivity extends AppCompatActivity {
      * String date: event's date
      * -Lue Cai, 14/10/2019
      * **/
-    private static double calculateTime(String date){
-        double different=0;
+    private static int calculateDate(String date){
+        int different=0;
         SimpleDateFormat formatter   =   new SimpleDateFormat("yyyy-MM-dd");
         Date curDate =  new Date(System.currentTimeMillis());
         String   cD   =   formatter.format(curDate);
         String[] t0=cD.split("-");
         String[] t=date.split("-");
         for (int i=0;i<3;i++){
+            if ((Integer.valueOf(t[i])-Integer.valueOf(t0[i]))>0){
+                different+=(Integer.valueOf(t[i])-Integer.valueOf(t0[i]));
+            }
+        }
+        return different;
+    }
+    /**A simple method made for checking if an event arrive is due
+     * String time: event's time
+     * -Lue Cai, 15/10/2019
+     * **/
+    private static int calculateTime(String time){
+        int different=0;
+        SimpleDateFormat formatter   =   new SimpleDateFormat("HH:mm");
+        Date curDate =  new Date(System.currentTimeMillis());
+        String   cD   =   formatter.format(curDate);
+        System.out.println(cD);
+        String[] t0=cD.split(":");
+        String[] t=time.split(":");
+        for (int i=0;i<2;i++){
             if ((Integer.valueOf(t[i])-Integer.valueOf(t0[i]))>0){
                 different+=(Integer.valueOf(t[i])-Integer.valueOf(t0[i]));
             }

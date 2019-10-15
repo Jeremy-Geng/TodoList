@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
@@ -21,13 +22,18 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.util.ArrayList;
-
+/***
+ * A event operation class that contain basic information and operation.
+ * Enable users to edit event's name and description Directly
+ * **/
 public class EventActivity extends AppCompatActivity {
     EditText name;
     EditText desc;
     EditText date;
+    EditText time;
     EditText location;
     String flag = "-1";
     String INDEX;
@@ -35,9 +41,13 @@ public class EventActivity extends AppCompatActivity {
     public static int LOCATION_CONTACT=1;
 
     private Calendar calendar;
+    private Calendar timeCalendar;
+
     private int eYear;
     private int eMonth;
     private int eDay;
+    private int eHour;
+    private int eMinute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,29 +57,36 @@ public class EventActivity extends AppCompatActivity {
         //getting components
         name=(EditText)findViewById(R.id.name);
         desc=(EditText)findViewById(R.id.description);
-        Button add=(Button)findViewById(R.id.add);
         date = (EditText) findViewById(R.id.date);
-        date.setInputType(InputType.TYPE_NULL);
-        calendar = Calendar.getInstance();
-
+        time=(EditText)findViewById(R.id.time) ;
         location=(EditText)findViewById(R.id.location);
+
+        Button add=(Button)findViewById(R.id.add);
+
+        date.setInputType(InputType.TYPE_NULL);
+        time.setInputType(InputType.TYPE_NULL);
+        calendar = Calendar.getInstance();
+        timeCalendar=Calendar.getInstance();
 
         String eName;
         String eDescription;
         String eDate;
+        String eTime;
         String eLocation;
         final Bundle bundle = getIntent().getExtras();
 
         if(bundle != null){
             add.setText("Edit");
             eName = bundle.getString("name");
-            eDescription = bundle.getString("description");
             eDate=bundle.getString("date");
+            eTime=bundle.getString("time");
+            eDescription = bundle.getString("description");
             eLocation=bundle.getString("location");
             INDEX = bundle.getString("index");
             name.setText(eName);
-            desc.setText(eDescription);
             date.setText(eDate);
+            time.setText(eTime);
+            desc.setText(eDescription);
             location.setText(eLocation);
         }else{
             add.setText("ADD");
@@ -81,6 +98,7 @@ public class EventActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String n = name.getText().toString();
                 String da=date.getText().toString();
+                String t=time.getText().toString();
                 String d = desc.getText().toString();
                 String l=location.getText().toString();
                 Bundle newBundle = new Bundle();
@@ -89,15 +107,20 @@ public class EventActivity extends AppCompatActivity {
                     newBundle.putString("index",index);
                 }
                 newBundle.putString("name",n);
-                newBundle.putString("description",d);
                 newBundle.putString("date",da);
+                newBundle.putString("time",t);
+                newBundle.putString("description",d);
                 newBundle.putString("location",l);
                 Intent intent = new Intent(EventActivity.this,MainActivity.class);
                 intent.putExtras(newBundle);
                 startActivity(intent);
             }
         });
-
+        /***
+         * Below are a series of operation that allow users
+         * choose date, time, location when they click related editview once
+         *-Lue Cai, 15/10/2019
+         * **/
         date.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -106,23 +129,44 @@ public class EventActivity extends AppCompatActivity {
                 }
             }
         });
-
-        date.setOnClickListener(new View.OnClickListener() {
+       date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dateSelection();
             }
         });
-
-        location.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+       time.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+           @Override
+           public void onFocusChange(View view, boolean b) {
+               if (b){
+                   timeSelection();
+               }
+           }
+       });
+       time.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               timeSelection();
+           }
+       });
+       location.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 Intent intent=new Intent(EventActivity.this,MapsActivity.class);
                 startActivityForResult(intent,LOCATION_CONTACT);
             }
         });
+       location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(EventActivity.this,MapsActivity.class);
+                startActivityForResult(intent,LOCATION_CONTACT);
+            }
+        });
     }
-    //choose a date from calendar
+    /**A function that create a calendar dialog for user to choose a date
+     * -Lue Cai, 15/10/2019
+     * **/
     private void dateSelection(){
         new DatePickerDialog(EventActivity.this,
                 new DatePickerDialog.OnDateSetListener() {
@@ -142,9 +186,25 @@ public class EventActivity extends AppCompatActivity {
                                 .append("-")
                                 .append((eDay < 10) ? "0" + eDay : eDay));
                     }
-                }, calendar.get(Calendar.YEAR), calendar
-                .get(Calendar.MONTH), calendar
-                .get(Calendar.DAY_OF_MONTH)).show();
+                }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+    /**A function that create a time picker dialog for user to choose a time(24h)
+     * -Lue Cai, 15/10/2019
+     * **/
+    private void timeSelection(){
+        new TimePickerDialog(EventActivity.this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                eHour = i;
+                eMinute = i1;
+
+                time.setText(new StringBuilder()
+                        .append(eHour)
+                        .append(":")
+                        .append(eMinute));
+            }
+        }, timeCalendar.get(Calendar.HOUR), timeCalendar.get(Calendar.MINUTE),true).show();
+
     }
 
     /**A simple method that customizes the menu

@@ -49,6 +49,13 @@
             android:ems="10"
             android:inputType="none"
             android:hint="Date: YY-MM-DD" />
+        <EditText
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:inputType="none"
+            android:hint="Time: HH-mm" />
 
             <EditText
                 android:id="@+id/location"
@@ -62,7 +69,7 @@
         <EditText
             android:id="@+id/description"
             android:layout_width="match_parent"
-            android:layout_height="335dp"
+            android:layout_height="250dp"
             android:ems="10"
             android:gravity="start|top"
             android:hint="Description: "
