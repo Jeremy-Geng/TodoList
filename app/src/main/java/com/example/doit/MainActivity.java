@@ -72,9 +72,11 @@ public class MainActivity extends AppCompatActivity {
             convertView = LayoutInflater.from(econtext).inflate(R.layout.listview_item,null);
             TextView e_Name = (TextView) convertView.findViewById(R.id.even_name);
             TextView e_Description = (TextView) convertView.findViewById(R.id.event_discription);
+            TextView e_Date=(TextView)convertView.findViewById(R.id.even_date);
             //CheckBox e_complete=(CheckBox) convertView.findViewById(R.id.complete);
             e_Name.setText(events.get(i).getEventName());
             e_Description.setText(events.get(i).getDescription());
+            e_Date.setText(events.get(i).getDate());
             return convertView;
         }
     }
