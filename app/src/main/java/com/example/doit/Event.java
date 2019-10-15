@@ -14,17 +14,18 @@ public class Event implements Serializable {
     private String date;
     private String time;
     private String description;
-    private String ifComplete;
+    private boolean complete;
     private String location;
-    public Event(String eName,String date,String time ,String desc,String location){
+    public Event(String eName,String date,String time ,String desc,String location,boolean complete){
         this.eventName=eName;
         this.date=date;
         this.time=time;
         this.description=desc;
         this.location=location;
+        this.complete=complete;
     }
-    public Event editEvent(String eName, String date,String time,String desc,String location){
-        return new Event(eName,date,time,desc,location);
+    public Event editEvent(String eName, String date,String time,String desc,String location,boolean complete){
+        return new Event(eName,date,time,desc,location,complete);
     }
 
     public String getEventName() {
@@ -41,6 +42,8 @@ public class Event implements Serializable {
 
     public String getTime(){return time;}
 
+    public boolean getComplete(){return complete;}
+
     public void setEventName(String name){
         eventName = name;
     }
@@ -50,4 +53,5 @@ public class Event implements Serializable {
     public void setDate(String date){this.date=date;}
     public void setLocation(String location){this.location=location;}
     public void setTime(String time){this.time=time;}
+    public void setComplete(boolean complete){this.complete=complete;}
 }

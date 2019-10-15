@@ -7,6 +7,7 @@ import android.app.ListActivity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Debug;
@@ -77,6 +78,11 @@ public class MainActivity extends AppCompatActivity {
             e_Name.setText(events.get(i).getEventName());
             e_Description.setText(events.get(i).getDescription());
             e_Date.setText(events.get(i).getDate());
+            if (events.get(i).getComplete()){
+                e_Name.setTextColor(Color.RED);
+                e_Description.setTextColor(Color.RED);
+                e_Date.setTextColor(Color.RED);
+            }
             return convertView;
         }
     }
@@ -107,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             String eTime=bunlde.getString("time");
             String eDescription = bunlde.getString("description");
             String eLocation=bunlde.getString("location");
+            boolean eComplete=bunlde.getBoolean("complete");
             String index = bunlde.getString("index");
             String flag = bunlde.getString("flag");
 
@@ -118,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     events.get(i).setTime(eTime);
                     events.get(i).setDescription(eDescription);
                     events.get(i).setLocation(eLocation);
+                    events.get(i).setComplete(eComplete);
                     save();
                 }else{
                     events.remove(i);
@@ -125,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 if(flag == null){
-                    Event newEvent = new Event(eName,eDate,eTime, eDescription,eLocation);
+                    Event newEvent = new Event(eName,eDate,eTime, eDescription,eLocation,eComplete);
                     events.add(newEvent);
                     save();
                 }
@@ -143,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 String da=event.getDate();
                 String t=event.getTime();
                 String loc=event.getLocation();
+                boolean c=event.getComplete();
                 String index = Integer.toString(i);
                 Bundle bundle = new Bundle();
                 bundle.putString("index",index);
@@ -151,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString("date",da);
                 bundle.putString("description",d);
                 bundle.putString("location",loc);
+                bundle.putBoolean("complete",c);
                 Intent intent = new Intent(MainActivity.this,EventActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);

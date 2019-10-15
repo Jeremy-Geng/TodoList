@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,6 +36,7 @@ public class EventActivity extends AppCompatActivity {
     EditText date;
     EditText time;
     EditText location;
+    CheckBox complete;
     String flag = "-1";
     String INDEX;
 
@@ -60,6 +62,7 @@ public class EventActivity extends AppCompatActivity {
         date = (EditText) findViewById(R.id.date);
         time=(EditText)findViewById(R.id.time) ;
         location=(EditText)findViewById(R.id.location);
+        complete=(CheckBox)findViewById(R.id.complete);
 
         Button add=(Button)findViewById(R.id.add);
 
@@ -73,6 +76,7 @@ public class EventActivity extends AppCompatActivity {
         String eDate;
         String eTime;
         String eLocation;
+        boolean eComplete;
         final Bundle bundle = getIntent().getExtras();
 
         if(bundle != null){
@@ -82,12 +86,14 @@ public class EventActivity extends AppCompatActivity {
             eTime=bundle.getString("time");
             eDescription = bundle.getString("description");
             eLocation=bundle.getString("location");
+            eComplete=bundle.getBoolean("complete");
             INDEX = bundle.getString("index");
             name.setText(eName);
             date.setText(eDate);
             time.setText(eTime);
             desc.setText(eDescription);
             location.setText(eLocation);
+            complete.setChecked(eComplete);
         }else{
             add.setText("ADD");
         }
@@ -101,6 +107,7 @@ public class EventActivity extends AppCompatActivity {
                 String t=time.getText().toString();
                 String d = desc.getText().toString();
                 String l=location.getText().toString();
+                boolean c=complete.isChecked();
                 Bundle newBundle = new Bundle();
                 if(bundle != null){
                     String index = bundle.getString("index");
@@ -111,6 +118,7 @@ public class EventActivity extends AppCompatActivity {
                 newBundle.putString("time",t);
                 newBundle.putString("description",d);
                 newBundle.putString("location",l);
+                newBundle.putBoolean("complete",c);
                 Intent intent = new Intent(EventActivity.this,MainActivity.class);
                 intent.putExtras(newBundle);
                 startActivity(intent);

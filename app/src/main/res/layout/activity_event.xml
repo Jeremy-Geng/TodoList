@@ -69,11 +69,21 @@
         <EditText
             android:id="@+id/description"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="200dp"
             android:ems="10"
             android:gravity="start|top"
             android:hint="Description: "
             android:inputType="textMultiLine" />
 
+        <CheckBox
+            android:id="@+id/complete"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:text="Complete"
+            android:textSize="60px"
+            android:textColor="@color/quantum_grey"/>
+
     </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
