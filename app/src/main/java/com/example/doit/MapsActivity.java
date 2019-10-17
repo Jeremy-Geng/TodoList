@@ -103,6 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        // Code adapted from Google Map platform: https://developers.google.com/maps/documentation/android-sdk/map-with-marker
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -120,6 +121,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     //initialize the current location and find the destination
+    //This was adapted from a video from Codingwithmitch on 20171010 to Youtube here:
+    //https://www.youtube.com/watch?v=MWowf5SkiOE&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt&index=6
     private void init(){
         mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -142,6 +145,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
     //get desination's location
+    //This was adapted from a video from Codingwithmitch on 20171010 to Youtube here:
+    //https://www.youtube.com/watch?v=MWowf5SkiOE&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt&index=6
     private void getLocate(){
         String searchString =mSearchText.getText().toString();
         Geocoder geocoder=new Geocoder(MapsActivity.this);
@@ -152,7 +157,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         if (list.size()>0){
             Address address=list.get(0);
-            LatLng newPlace = new LatLng(address.getLatitude(), address.getLongitude());  // this is New York
+            LatLng newPlace = new LatLng(address.getLatitude(), address.getLongitude());  // this is current location
             mMap.addMarker(new MarkerOptions().position(newPlace).title(address.getAddressLine(0)));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newPlace,12));
         }
@@ -161,9 +166,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-            LatLng sydney = new LatLng(-34, 151);
-            mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12));
+
         //map ui setting
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
@@ -191,6 +194,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
     //if user have't have authority, require or set the currenlocation
+    //This was adapted from a post from YiHeYuan on 20170304 to CSDN forum here:
+    //https://blog.csdn.net/kmyhy/article/details/60344699
     private void setUpMap() {
         //get permission
         if (ActivityCompat.checkSelfPermission(this,
@@ -224,6 +229,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     //return a readable address from a given location
+    //This was adapted from a post from YiHeYuan on 20170304 to CSDN forum here:
+    //https://blog.csdn.net/kmyhy/article/details/60344699
     private String getAddress( LatLng latLng ) {
         Geocoder geocoder = new Geocoder( this );
         String addressText = "";
@@ -242,6 +249,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return addressText;
     }
     //require permission
+    //This was adapted from a post from YiHeYuan on 20170304 to CSDN forum here:
+    //https://blog.csdn.net/kmyhy/article/details/60344699
     protected void startLocationUpdates() {
         //require permission
         if (ActivityCompat.checkSelfPermission(this,
@@ -257,6 +266,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     //a basic setting about location, allow phone detecting moving
+    //This was adapted from a post from YiHeYuan on 20170304 to CSDN forum here:
+    //https://blog.csdn.net/kmyhy/article/details/60344699
     protected void createLocationRequest() {
         //build a request
         mLocationRequest = new LocationRequest();
@@ -277,19 +288,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onResult(@NonNull LocationSettingsResult result) {
                 final Status status = result.getStatus();
                 switch (status.getStatusCode()) {
-                    // 4
                     case LocationSettingsStatusCodes.SUCCESS:
                         mLocationUpdateState = true;
                         startLocationUpdates();
                         break;
-                    // 5
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         try {
                             status.startResolutionForResult(MapsActivity.this, REQUEST_CHECK_SETTINGS);
                         } catch (IntentSender.SendIntentException e) {
                         }
                         break;
-                    // 6
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
                         break;
                 }

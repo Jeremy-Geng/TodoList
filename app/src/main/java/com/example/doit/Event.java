@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.Serializable;
 import java.util.Date;
-
+/**
+ * An event class that hold most of the event information.
+ * **/
 public class Event implements Serializable {
     private String eventName;
     private String date;
