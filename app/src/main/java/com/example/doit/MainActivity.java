@@ -164,7 +164,14 @@ public class MainActivity extends Activity {
                     if(timegap == 0){
                         timegap = -1000;
                     }
-                    setAlarm(newEvent.getRequestCode(), timegap, eName);
+                    /**
+                     * notify the user when he/her reach the destination
+                     * Lue Cai -17/10/2019
+                     * ***/
+                    MapsActivity adf=new MapsActivity();
+                    if (adf.distance()<1000){
+                        setAlarm(newEvent.getRequestCode(), (long)adf.distance(), "reach the destination");
+                    }
                     save();
                 }
             }
@@ -300,8 +307,5 @@ public class MainActivity extends Activity {
             ViewCompat.setFitsSystemWindows(mChildView, false);
             ViewCompat.requestApplyInsets(mChildView);
         }
-
     }
-
-
 }

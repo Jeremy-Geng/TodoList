@@ -82,6 +82,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //the location data that want to give back
     private String location;
 
+    private LatLng destination;
+    private LatLng current;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,7 +160,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         if (list.size()>0){
             Address address=list.get(0);
-            LatLng newPlace = new LatLng(address.getLatitude(), address.getLongitude());  // this is current location
+            LatLng newPlace = new LatLng(address.getLatitude(), address.getLongitude());  // this is destination
+            destination=newPlace;
             mMap.addMarker(new MarkerOptions().position(newPlace).title(address.getAddressLine(0)));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newPlace,12));
         }
@@ -214,6 +218,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (mLastLocation != null) {
                 LatLng currentLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation
                         .getLongitude());
+                current=currentLocation;
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12));
             }
         }
@@ -360,5 +365,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public boolean onMarkerClick(Marker marker) {
         return false;
+    }
+
+/***
+ * A method that calculate the distance between destination and current location
+ * **/
+    public float distance ()
+    {
+        if (current==null){
+            setUpMap();
+        }
+        if (destination==null){
+            init();
+        }
+        double lat_a=current.latitude;
+        double lng_a=current.longitude;
+        double lat_b=destination.latitude;
+        double lng_b=destination.longitude;
+        double earthRadius = 3958.75;
+        double latDiff = Math.toRadians(lat_b-lat_a);
+        double lngDiff = Math.toRadians(lng_b-lng_a);
+        double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
+                Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) *
+                        Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double distance = earthRadius * c;
+
+        int meterConversion = 1609;
+
+        return new Float(distance * meterConversion).floatValue();
     }
 }
