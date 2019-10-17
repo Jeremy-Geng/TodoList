@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MyActivity";
 
+    /**Cutomized BaseAdapter class to showcase different tasks in a listview
+     * -Shuhao Geng 16/10/2019
+     * **/
     public class EventAdapator extends BaseAdapter{
 
         public ArrayList<Event> events;
@@ -87,39 +90,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //this two are use in a simple test
     private ListView list_events;
     public ArrayList<Event> events;
     private EventAdapator eAdapter;
     private Context eContext;
-    private ArrayList<AlarmManager> alarmManagers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Button add=(Button) findViewById(R.id.add);
         list_events = (ListView)findViewById(R.id.list_item);
         eContext = MainActivity.this;
 
         events  = new ArrayList<>();
         restore();
-
         Bundle bunlde = getIntent().getExtras();
 
+        /**Add, edit and delete one specific task
+         * -Shuhao Geng 13/10/2019
+         * **/
         if(bunlde != null) {
-
             String eName = bunlde.getString("name");
             String eDate=bunlde.getString("date");
             String eTime=bunlde.getString("time");
-
-            Log.i(TAG,"etime = "+eTime);
-            Log.i(TAG,"eDate = " + eDate);
-
             String eDescription = bunlde.getString("description");
             String eLocation=bunlde.getString("location");
-            boolean eComplete=bunlde.getBoolean("complete");
+            boolean eComplete=bunlde.getBoolean("complete",false);
             String index = bunlde.getString("index");
             String flag = bunlde.getString("flag");
 
@@ -132,20 +129,34 @@ public class MainActivity extends AppCompatActivity {
                     events.get(i).setDescription(eDescription);
                     events.get(i).setLocation(eLocation);
                     events.get(i).setComplete(eComplete);
+                    long timegap = timeGap(eDate, eTime);
+                    if(eComplete == false){
+                        if(timegap == 0){
+                            timegap = -1000;
+                        }
+                        setAlarm(events.get(i).getRequestCode(),timegap,eName);
+                    }else{
+                        deleteAlarm(i);
+                    }
                     save();
+
                 }else{
+                    deleteAlarm(i);
                     events.remove(i);
                     save();
                 }
             } else {
                 if(flag == null){
                     Event newEvent = new Event(eName,eDate,eTime, eDescription,eLocation,eComplete);
+                    newEvent.setRequestCode();
                     events.add(newEvent);
-                    save();
+                    long timegap = timeGap(eDate, eTime);
+                    if(timegap == 0){
+                        timegap = -1000;
+                    }
+                    setAlarm(newEvent.getRequestCode(), timegap, eName);
 
-                    long timegap = timeGap(eDate,eTime);
-                    alarmManagers = new ArrayList<>();
-                    setAlarm(events.size()-1, timegap, eName);
+                    save();
                 }
             }
         }
@@ -186,12 +197,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**Sava tasks' information into local memory in order to restore them when the APP is opened again.
+     * -Shuhao Geng 13/10/2019
+     * **/
     public void save(){
         try{
             File filesDir = new File(getDir("myFile", MODE_PRIVATE).getAbsolutePath()) ;
-            Log.i(TAG,"file_dir="+filesDir);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(filesDir.toString() +"/event.ser"));
             objectOutputStream.writeObject(events);
+
             objectOutputStream.close();
 
 
@@ -201,15 +215,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**Restore tasks' information from local memory
+     * -Shuhao Geng 13/10/2019
+     * **/
     public void restore(){
         try{
             File filesDir = new File(getDir("myFile", MODE_PRIVATE).getAbsolutePath()) ;
             if(filesDir.exists()) {
                 ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(filesDir.toString() +"/event.ser"));
-
                 events = (ArrayList<Event>) objectInputStream.readObject();
-                Log.i("name",events.get(0).getEventName() );
-
                 objectInputStream.close();
             }
         }catch (Exception e){
@@ -217,7 +231,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
+    /** Auxiliary method to calculate time difference for reminder
+     * -Shuhao Geng 16/10/2019
+     * **/
     private static long timeGap(String date, String time ){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date curTime =  new Date(System.currentTimeMillis());
@@ -232,20 +248,31 @@ public class MainActivity extends AppCompatActivity {
         return between;
     }
 
-    public  void setAlarm(int index, long between,String name){
-        Intent intent = new Intent(this, MyBroadcastReceiver.class);
+    /** Auxiliary method of setting one alarm manager for reminder
+     * -Shuhao Geng 16/10/2019
+     * **/
+    public  void setAlarm(int requestCode, long between,String name){
+        Intent intent;
+        if(between < 0){
+            intent = new Intent(this, SilentBroadcastReceiver.class);
+        }else{
+            intent = new Intent(this, MyBroadcastReceiver.class);
+        }
         intent.putExtra("Name", name);
-        intent.putExtra("Index",index);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), index, intent, 0);
+        intent.putExtra("RequestCode",requestCode);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), requestCode, intent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pendingIntent);
-        alarmManagers.add(alarmManager);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + between, pendingIntent);
 
     }
-
-    public void deleteAlarm(){
-
+    /** Auxiliary method of deleting one alarm manager for reminder
+     * -Shuhao Geng 16/10/2019
+     * **/
+    public void deleteAlarm(int index){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, MyBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), events.get(index).getRequestCode(), intent, 0);
+        alarmManager.cancel(pendingIntent);
     }
-
 
 }

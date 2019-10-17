@@ -16,6 +16,7 @@ public class Event implements Serializable {
     private String description;
     private boolean complete;
     private String location;
+    private int requestCode;
     public Event(String eName,String date,String time ,String desc,String location,boolean complete){
         this.eventName=eName;
         this.date=date;
@@ -54,4 +55,12 @@ public class Event implements Serializable {
     public void setLocation(String location){this.location=location;}
     public void setTime(String time){this.time=time;}
     public void setComplete(boolean complete){this.complete=complete;}
+
+    public void setRequestCode(){
+        requestCode = this.hashCode();
+    }
+
+    public int getRequestCode(){
+        return  requestCode;
+    }
 }

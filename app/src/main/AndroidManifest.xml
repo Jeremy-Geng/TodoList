@@ -54,6 +54,8 @@
         </activity>
 
         <receiver android:name = "MyBroadcastReceiver"> </receiver>
+        <receiver android:name = ".SilentBroadcastReceiver"> </receiver>
+
     </application>
 
 
