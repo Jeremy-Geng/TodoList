@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 /**
- * Example local unit test, which will execute on the development machine (host).
+ * Event local unit test, which will execute on the development machine (host).
  *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class EventsUnitTest {
+    //test if event info are accessible.
     @Test
     public void event_getInfo_test(){
         Event event=new Event("cook","2019-10-10","12:00","make salad","anu",false);
@@ -22,6 +22,7 @@ public class EventsUnitTest {
         assertEquals("anu",event.getLocation());
         assertEquals(false,event.getComplete());
     }
+    //test if event can be edited successfully.
     @Test
     public void event_edit_test(){
         Event event=new Event("cook","2019-10-10","12:00","make salad","anu",false);
@@ -40,6 +41,7 @@ public class EventsUnitTest {
         assertNotEquals(false,event.getComplete());
         assertEquals(true,event.getComplete());
     }
+    //test the basic operations in event list
     @Test
     public void event_list_operation_test(){
         Event event1=new Event("cook","2019-10-10","12:00","make salad","anu",false);
