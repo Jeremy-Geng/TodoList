@@ -2,21 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/name_complete"
+        android:layout_width="396dp"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:id="@+id/name_complete">
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/name_date_des"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:orientation="vertical">
+
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:orientation="vertical"
-                android:id="@+id/name_date_des">
-            <LinearLayout
+                android:id="@+id/name_date"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:id="@+id/name_date">
+                android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/even_name"
                     android:layout_width="200dp"
@@ -26,19 +30,19 @@
 
                 <TextView
                     android:id="@+id/even_date"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="80dp"
-                    android:textSize="50px"
-                    />
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="50dp"
+                    android:textSize="50px" />
+
             </LinearLayout>
-                    <TextView
-                        android:id="@+id/event_discription"
-                        android:layout_width="match_parent"
-                        android:layout_height="25dp"
-                        android:textSize="45px"
-                        />
-            </LinearLayout>
+
+            <TextView
+                android:id="@+id/event_discription"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:textSize="45px" />
+        </LinearLayout>
 
     </LinearLayout>
 

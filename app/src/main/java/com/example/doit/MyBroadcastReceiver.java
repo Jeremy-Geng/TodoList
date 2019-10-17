@@ -19,6 +19,7 @@ import static androidx.core.content.ContextCompat.getSystemService;
 
 /** For sending a specific notification with regards to  one task set with time and data
  * -Shuhao Geng 16/10/2019
+ * Reference: https://developer.android.com/training/notify-user/channels
  * **/
 public class MyBroadcastReceiver extends BroadcastReceiver {
     public static  final String NOTIFICATION_CHANNEL_ID = "channel_id";
@@ -66,21 +67,5 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(requestCode, builder.build());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

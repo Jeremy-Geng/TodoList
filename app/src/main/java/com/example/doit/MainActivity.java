@@ -50,6 +50,7 @@ public class MainActivity extends Activity {
 
     /**Cutomized BaseAdapter class to showcase different tasks in a listview
      * -Shuhao Geng 16/10/2019
+     * Reference: * https://developer.android.com/reference/android/widget/BaseAdapter
      * **/
     public class EventAdapator extends BaseAdapter{
 
@@ -164,14 +165,16 @@ public class MainActivity extends Activity {
                     if(timegap == 0){
                         timegap = -1000;
                     }
+                    setAlarm(newEvent.getRequestCode(), timegap, eName);
+
                     /**
                      * notify the user when he/her reach the destination
                      * Lue Cai -17/10/2019
                      * ***/
-                    MapsActivity adf=new MapsActivity();
-                    if (adf.distance()<1000){
-                        setAlarm(newEvent.getRequestCode(), (long)adf.distance(), "reach the destination");
-                    }
+//                    MapsActivity adf=new MapsActivity();
+//                    if (adf.distance()<1000){
+//                        setAlarm(newEvent.getRequestCode(), (long)adf.distance(), "reach the destination");
+//                    }
                     save();
                 }
             }
@@ -266,6 +269,7 @@ public class MainActivity extends Activity {
 
     /** Auxiliary method of setting one alarm manager for reminder
      * -Shuhao Geng 16/10/2019
+     * reference: https://developer.android.com/reference/android/app/AlarmManager
      * **/
     public  void setAlarm(int requestCode, long between,String name){
         Intent intent;
@@ -293,7 +297,8 @@ public class MainActivity extends Activity {
     }
 
     /** set the color of the statusbar
-     * -Shuhao Geng 16/10/2019
+     * -Shuhao Geng 16/10/2019\
+     * reference: https://stackoverflow.com/questions/22192291/how-to-change-the-status-bar-color-in-android
      * **/
     static void setStatusBarColor(Activity activity, int statusColor) {
         Window window = activity.getWindow();
