@@ -1,7 +1,9 @@
 package com.example.doit;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.ListActivity;
 import android.app.PendingIntent;
@@ -20,6 +22,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -27,6 +31,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +44,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private static final String TAG = "MyActivity";
 
@@ -77,14 +83,15 @@ public class MainActivity extends AppCompatActivity {
             TextView e_Name = (TextView) convertView.findViewById(R.id.even_name);
             TextView e_Description = (TextView) convertView.findViewById(R.id.event_discription);
             TextView e_Date=(TextView)convertView.findViewById(R.id.even_date);
+            e_Name.setTextColor(Color.BLACK);
             //CheckBox e_complete=(CheckBox) convertView.findViewById(R.id.complete);
             e_Name.setText(events.get(i).getEventName());
             e_Description.setText(events.get(i).getDescription());
             e_Date.setText(events.get(i).getDate());
             if (events.get(i).getComplete()){
-                e_Name.setTextColor(Color.RED);
-                e_Description.setTextColor(Color.RED);
-                e_Date.setTextColor(Color.RED);
+                e_Name.setTextColor(Color.LTGRAY);
+                e_Description.setTextColor(Color.LTGRAY);
+                e_Date.setTextColor(Color.LTGRAY);
             }
             return convertView;
         }
@@ -98,8 +105,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setStatusBarColor(this,Color.LTGRAY);
         setContentView(R.layout.activity_main);
-        Button add=(Button) findViewById(R.id.add);
+        FloatingActionButton fab = findViewById(R.id.fab);
+
         list_events = (ListView)findViewById(R.id.list_item);
         eContext = MainActivity.this;
 
@@ -155,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
                         timegap = -1000;
                     }
                     setAlarm(newEvent.getRequestCode(), timegap, eName);
-
                     save();
                 }
             }
@@ -188,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        add.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(MainActivity.this,EventActivity.class);
@@ -265,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + between, pendingIntent);
 
     }
+
     /** Auxiliary method of deleting one alarm manager for reminder
      * -Shuhao Geng 16/10/2019
      * **/
@@ -274,5 +284,24 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), events.get(index).getRequestCode(), intent, 0);
         alarmManager.cancel(pendingIntent);
     }
+
+    /** set the color of the statusbar
+     * -Shuhao Geng 16/10/2019
+     * **/
+    static void setStatusBarColor(Activity activity, int statusColor) {
+        Window window = activity.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(statusColor);
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        ViewGroup mContentView = (ViewGroup) window.findViewById(Window.ID_ANDROID_CONTENT);
+        View mChildView = mContentView.getChildAt(0);
+        if (mChildView != null) {
+            ViewCompat.setFitsSystemWindows(mChildView, false);
+            ViewCompat.requestApplyInsets(mChildView);
+        }
+
+    }
+
 
 }
