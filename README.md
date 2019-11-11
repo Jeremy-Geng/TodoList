@@ -1,3 +1,2 @@
-# GP19S2
-
-Sample repository for the group project of COMP2100, 19S2.
+Todo list Android App
+See Wiki for detail
